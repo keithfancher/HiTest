@@ -8,3 +8,9 @@ def another_function():
 
 def one_more_function():
     pass
+
+
+class SomeClass(object):
+
+    def some_method(self):
+        pass

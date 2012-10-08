@@ -1,5 +1,22 @@
 HITEST
 ======
 
-Generates useful unit test boilerplate for Python modules. Or it *will*
-anyway...
+Generates useful unit test boilerplate for Python modules. Or it will once it's
+finished, anyway...
+
+
+REQUIREMENTS
+------------
+* python
+* argparse (standard with Python 2.7+)
+
+
+USAGE
+-----
+Just call it with your module as a command line argument. Output goes to
+stdout. For example, to generate testing boilerplate for wacky_module.py:
+
+    $ ./hitest.py wacky_module.py > test_wacky_module.py
+
+Then fill in your tests and pat yourself on the back for being a Good
+Programmer!

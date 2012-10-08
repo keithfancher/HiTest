@@ -5,6 +5,20 @@ import unittest
 import hitest as h
 
 
+class TestFixModuleName(unittest.TestCase):
+
+    def test_with_py(self):
+        """Module with .py at the end should lose the .py!"""
+        module = 'some_module.py'
+        output = 'some_module'
+        self.assertEqual(h.fix_module_name(module), output)
+
+    def test_with_no_py(self):
+        """Module with no .py at the end should be left alone."""
+        module = 'some_module'
+        self.assertEqual(h.fix_module_name(module), module)
+
+
 class TestGetFunctionNames(unittest.TestCase):
 
     def test_with_main(self):

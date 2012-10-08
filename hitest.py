@@ -21,7 +21,12 @@ import argparse
 import inspect
 
 
-TEST_MODULE = 'test_data.example_module'
+def fix_module_name(module):
+    """Strip .py from a module name, if it exists."""
+    if module.endswith('.py'):
+        return module[:-3]
+    else:
+        return module
 
 
 def get_function_names(module, include_main=False):
@@ -52,6 +57,7 @@ def to_class_case(name):
 def gen_test_boilerplate(module_name):
     """This does most of the work. Given a module name, returns a string of the
     test boilerplate for that module."""
+    module_name = fix_module_name(module_name) # strip .py
     header = "#!/usr/bin/env python\n\n\n"
     header += "import unittest\n"
     header += "import " + module_name + "\n\n\n"
@@ -82,7 +88,7 @@ def get_args():
 def main():
     """My main() man."""
     args = get_args()
-    print args.target_module
+    print gen_test_boilerplate(args.target_module),
 
 
 if __name__ == '__main__':

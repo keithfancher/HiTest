@@ -19,14 +19,15 @@ def get_function_names(module):
 
 def to_camel_case(name):
     """Turns some_function into SomeFunction."""
-    pass
+    ret = ""
+    return ret
 
 
 def gen_test_boilerplate(module_name, function_names):
     header = """#!/usr/bin/env python\n\n
 import unittest
 import """ + module_name + "\n\n"
-    footer = """if __name == '__main__':
+    footer = """if __name__ == '__main__':
     unittest.main()"""
     classes = ""
 

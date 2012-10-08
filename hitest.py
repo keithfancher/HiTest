@@ -33,11 +33,12 @@ def get_function_names(module, include_main=False):
     """Return a list of functions in the given module. Does not include main()
     by default."""
     function_names = []
+    imported = None
     exec('import ' + module + ' as imported') # crazy!
     funcs = inspect.getmembers(imported, inspect.isfunction)
-    for key, val in funcs:
-        if include_main or key != 'main':
-            function_names.append(key)
+    for name, dummy in funcs:
+        if include_main or name != 'main':
+            function_names.append(name)
     return function_names
 
 

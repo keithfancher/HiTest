@@ -5,15 +5,24 @@ import unittest
 import hitest as h
 
 
-class TestToCamelCase(unittest.TestCase):
+class TestToClassCase(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def test_normal_function(self):
+    def test_normal_name(self):
+        """A regular Pythonic function name should be converted."""
         func_name = "some_normal_function"
-        camelized = "SomeNormalFunction"
-        self.assertEqual(h.to_camel_case(func_name), camelized)
+        classy = "SomeNormalFunction"
+        self.assertEqual(h.to_class_case(func_name), classy)
+
+    def test_classy_name(self):
+        """An-already classy name should be left alone."""
+        classy = "SomeNormalFunction"
+        self.assertEqual(h.to_class_case(classy), classy)
+
+    def test_camel_case(self):
+        """A camel case name should be classified properly."""
+        camel = "someFunctionName"
+        classy = "SomeFunctionName"
+        self.assertEqual(h.to_class_case(camel), classy)
 
 
 if __name__ == '__main__':

@@ -7,8 +7,9 @@ import inspect
 TEST_MODULE = 'example_module'
 
 
-def get_function_names(module):
-    """Return a list of functions in the given module."""
+def get_function_names(module, include_main=False):
+    """Return a list of functions in the given module. Does not include main()
+    by default."""
     function_names = []
     exec('import ' + TEST_MODULE + ' as imported') # crazy!
     funcs = inspect.getmembers(imported, inspect.isfunction)
@@ -17,9 +18,16 @@ def get_function_names(module):
     return function_names
 
 
-def to_camel_case(name):
+def to_class_case(name):
     """Turns some_function into SomeFunction."""
-    ret = ""
+    ret = ''
+    words = name.split('_')
+    if len(words) > 1:
+        for word in words:
+            ret += word.title()
+    else:
+        # can't use title here, must preserve other caps
+        ret = name[0].upper() + name[1:]
     return ret
 
 

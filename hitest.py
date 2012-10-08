@@ -14,7 +14,8 @@ def get_function_names(module, include_main=False):
     exec('import ' + TEST_MODULE + ' as imported') # crazy!
     funcs = inspect.getmembers(imported, inspect.isfunction)
     for key, val in funcs:
-        function_names.append(key)
+        if include_main or key != 'main':
+            function_names.append(key)
     return function_names
 
 

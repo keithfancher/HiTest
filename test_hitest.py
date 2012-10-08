@@ -5,6 +5,30 @@ import unittest
 import hitest as h
 
 
+class TestGetFunctionNames(unittest.TestCase):
+
+    def test_with_main(self):
+        """Should return all the functions, including main."""
+        module = 'example_module'
+        should_return = ['some_function', 'another_function',
+                         'one_more_function', 'main']
+        names = h.get_function_names(module, True)
+        self.assertEqual(sorted(names), sorted(should_return))
+
+    def test_ignore_main(self):
+        """Should return all functions *except* for main."""
+        module = 'example_module'
+        should_return = ['some_function', 'another_function',
+                         'one_more_function']
+        names = h.get_function_names(module)
+        self.assertEqual(sorted(names), sorted(should_return))
+
+    def test_with_classes(self):
+        """Should also include class methods."""
+        # TODO
+        pass
+
+
 class TestToClassCase(unittest.TestCase):
 
     def test_normal_name(self):

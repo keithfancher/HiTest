@@ -4,14 +4,14 @@
 import inspect
 
 
-TEST_MODULE = 'example_module'
+TEST_MODULE = 'test_data.example_module'
 
 
 def get_function_names(module, include_main=False):
     """Return a list of functions in the given module. Does not include main()
     by default."""
     function_names = []
-    exec('import ' + TEST_MODULE + ' as imported') # crazy!
+    exec('import ' + module + ' as imported') # crazy!
     funcs = inspect.getmembers(imported, inspect.isfunction)
     for key, val in funcs:
         if include_main or key != 'main':

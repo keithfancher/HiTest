@@ -9,7 +9,7 @@ class TestGetFunctionNames(unittest.TestCase):
 
     def test_with_main(self):
         """Should return all the functions, including main."""
-        module = 'example_module'
+        module = 'test_data.example_module'
         should_return = ['some_function', 'another_function',
                          'one_more_function', 'main']
         names = h.get_function_names(module, True)
@@ -17,7 +17,7 @@ class TestGetFunctionNames(unittest.TestCase):
 
     def test_ignore_main(self):
         """Should return all functions *except* for main."""
-        module = 'example_module'
+        module = 'test_data.example_module'
         should_return = ['some_function', 'another_function',
                          'one_more_function']
         names = h.get_function_names(module)

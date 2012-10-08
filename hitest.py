@@ -32,28 +32,31 @@ def to_class_case(name):
     return ret
 
 
-def gen_test_boilerplate(module_name, function_names):
-    header = """#!/usr/bin/env python\n\n
-import unittest
-import """ + module_name + "\n\n"
-    footer = """if __name__ == '__main__':
-    unittest.main()"""
+def gen_test_boilerplate(module_name):
+    """This does most of the work. Given a module name, returns a string of the
+    test boilerplate for that module."""
+    header = "#!/usr/bin/env python\n\n\n"
+    header += "import unittest\n"
+    header += "import " + module_name + "\n\n\n"
+
+    footer = "if __name__ == '__main__':\n"
+    footer += "    unittest.main()\n"
     classes = ""
 
+    function_names = get_function_names(module_name)
+
     for name in function_names:
-        classes += "class Test_" + name + "(unittest.TestCase):\n\n"
+        classy_name = to_class_case(name)
+        classes += "class Test" + classy_name + "(unittest.TestCase):\n\n"
         classes += "    def setUp(self):\n        pass\n\n"
         classes += "    def test_something(self):\n        pass\n\n\n"
 
-    print header
-    print classes
-    print footer
+    return header + classes + footer
 
 
 def main():
     """My main() man."""
-    names = get_function_names(TEST_MODULE)
-    gen_test_boilerplate(TEST_MODULE, names)
+    pass
 
 
 if __name__ == '__main__':

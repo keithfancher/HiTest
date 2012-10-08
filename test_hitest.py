@@ -49,5 +49,15 @@ class TestToClassCase(unittest.TestCase):
         self.assertEqual(h.to_class_case(camel), classy)
 
 
+class TestGenTestBoilerplate(unittest.TestCase):
+
+    def test_example_module(self):
+        module = 'test_data.example_module'
+        good_boilerplate = ''
+        with open('test_data/test_example_module.py') as f:
+            good_boilerplate = f.read()
+        self.assertEqual(h.gen_test_boilerplate(module), good_boilerplate)
+
+
 if __name__ == '__main__':
     unittest.main()

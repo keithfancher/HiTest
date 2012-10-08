@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import argparse
 import inspect
 
 
@@ -70,9 +71,18 @@ def gen_test_boilerplate(module_name):
     return header + classes + footer
 
 
+def get_args():
+    """Gets and parses command line arguments."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target_module', action='store',
+                        help='the module you\'d like to generate tests for')
+    return parser.parse_args()
+
+
 def main():
     """My main() man."""
-    pass
+    args = get_args()
+    print args.target_module
 
 
 if __name__ == '__main__':

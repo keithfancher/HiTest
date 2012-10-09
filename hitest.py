@@ -19,6 +19,7 @@
 
 import argparse
 import inspect
+import sys
 
 
 def fix_module_name(module):
@@ -34,7 +35,11 @@ def get_function_names(module, include_main=False):
     include main, 'cause who wants to test that?"""
     function_names = []
     imported = None
-    exec('import ' + module + ' as imported') # crazy!
+    try:
+        exec('import ' + module + ' as imported') # crazy!
+    except ImportError:
+        print "Sorry, can't find a module called " + module
+        sys.exit(1)
     funcs = inspect.getmembers(imported, inspect.isfunction)
     for name, dummy in funcs:
         if include_main or name != 'main':

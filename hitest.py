@@ -30,8 +30,8 @@ def fix_module_name(module):
 
 
 def get_function_names(module, include_main=False):
-    """Return a list of functions in the given module. Does not include main()
-    by default."""
+    """Return a list of functions in the given module. By default does not
+    include main, 'cause who wants to test that?"""
     function_names = []
     imported = None
     exec('import ' + module + ' as imported') # crazy!
@@ -55,7 +55,7 @@ def to_class_case(name):
     return ret
 
 
-def gen_test_boilerplate(module_name):
+def gen_test_boilerplate(module_name, include_main=False):
     """This does most of the work. Given a module name, returns a string of the
     test boilerplate for that module."""
     module_name = fix_module_name(module_name) # strip .py
@@ -67,7 +67,7 @@ def gen_test_boilerplate(module_name):
     footer += "    unittest.main()\n"
     classes = ""
 
-    function_names = get_function_names(module_name)
+    function_names = get_function_names(module_name, include_main)
 
     for name in function_names:
         classy_name = to_class_case(name)
@@ -81,6 +81,8 @@ def gen_test_boilerplate(module_name):
 def get_args():
     """Gets and parses command line arguments."""
     parser = argparse.ArgumentParser()
+    parser.add_argument('-m', '--test-main', action='store_true',
+                        default=False, help='include main function in tests')
     parser.add_argument('target_module', action='store',
                         help='the module you\'d like to generate tests for')
     return parser.parse_args()
@@ -89,7 +91,7 @@ def get_args():
 def main():
     """My main() man."""
     args = get_args()
-    print gen_test_boilerplate(args.target_module),
+    print gen_test_boilerplate(args.target_module, args.test_main),
 
 
 if __name__ == '__main__':

@@ -109,21 +109,32 @@ def gen_test_boilerplate(module_name, include_main=False):
     module_name = fix_module_name(module_name) # strip .py
     header = "#!/usr/bin/env python\n\n\n"
     header += "import unittest\n"
-    header += "import " + module_name + "\n\n\n"
+    header += "import " + module_name + "\n\n"
 
-    footer = "if __name__ == '__main__':\n"
+    footer = "\nif __name__ == '__main__':\n"
     footer += "    unittest.main()\n"
-    classes = ""
+    function_tests = ""
 
     function_names = get_function_names(module_name, include_main)
 
     for name in function_names:
         classy_name = to_class_case(name)
-        classes += "class Test" + classy_name + "(unittest.TestCase):\n\n"
-        classes += "    def setUp(self):\n        pass\n\n"
-        classes += "    def test_something(self):\n        pass\n\n\n"
+        function_tests += "\nclass Test" + classy_name + "(unittest.TestCase):\n\n"
+        function_tests += "    def setUp(self):\n        pass\n\n"
+        function_tests += "    def test_something(self):\n        pass\n\n"
 
-    return header + classes + footer
+    class_tests = ""
+    classes_and_methods = get_classes_and_methods(module_name)
+    for class_name, method_list in classes_and_methods.items():
+        class_tests += "\nclass Test" + class_name + "(unittest.TestCase):\n\n"
+        class_tests += "    def setUp(self):\n"
+        class_tests += "        self.test_instance = " + module_name + "." + class_name + "()\n\n"
+
+        for method_name in method_list:
+            class_tests += "    def test_" + method_name + "(self):\n"
+            class_tests += "        pass\n\n"
+
+    return header + function_tests + class_tests + footer
 
 
 def get_args():

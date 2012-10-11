@@ -47,6 +47,13 @@ def get_function_names(module, include_main=False):
     return function_names
 
 
+def get_method_names(module):
+    """Returns a dictionary with each key a class defined in the passed module.
+    The value of each key is a list of method names in that particular
+    class."""
+    pass
+
+
 def to_class_case(name):
     """Turns some_function into SomeFunction."""
     ret = ''

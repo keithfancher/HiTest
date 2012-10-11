@@ -37,10 +37,15 @@ class TestGetFunctionNames(unittest.TestCase):
         names = h.get_function_names(module)
         self.assertEqual(sorted(names), sorted(should_return))
 
-    def test_with_classes(self):
-        """Should also include class methods."""
-        # TODO
-        pass
+
+class TestGetMethodNames(unittest.TestCase):
+
+    def test_one_method(self):
+        """A class with one method should return the proper dictionary, duh."""
+        module = 'test_data.example_module'
+        should_return = { 'SomeClass': ['some_method'] }
+        methods = h.get_method_names(module)
+        self.assertEqual(sorted(methods), sorted(should_return))
 
 
 class TestToClassCase(unittest.TestCase):

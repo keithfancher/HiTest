@@ -47,11 +47,47 @@ def get_function_names(module, include_main=False):
     return function_names
 
 
-def get_method_names(module):
+def get_classes_and_methods(module):
     """Returns a dictionary with each key a class defined in the passed module.
     The value of each key is a list of method names in that particular
     class."""
-    pass
+    class_names = get_class_names(module)
+    methods = {}
+    imported = None
+    try:
+        exec('import ' + module + ' as imported') # crazy!
+    except ImportError:
+        print "Sorry, can't find a module called " + module
+        sys.exit(1)
+    for class_name in class_names:
+        class_object = getattr(imported, class_name)
+        class_methods = get_methods_from_class(class_object)
+        methods[class_name] = class_methods
+    return methods
+
+
+def get_class_names(module):
+    """Returns a list of class names that live in the given module."""
+    class_names = []
+    imported = None
+    try:
+        exec('import ' + module + ' as imported') # crazy!
+    except ImportError:
+        print "Sorry, can't find a module called " + module
+        sys.exit(1)
+    classes = inspect.getmembers(imported, inspect.isclass)
+    for name, dummy in classes:
+        class_names.append(name)
+    return class_names
+
+
+def get_methods_from_class(class_name):
+    """Returns a list of methods that live in a given class."""
+    method_names = []
+    methods = inspect.getmembers(class_name, inspect.ismethod)
+    for name, dummy in methods:
+        method_names.append(name)
+    return method_names
 
 
 def to_class_case(name):

@@ -38,13 +38,33 @@ class TestGetFunctionNames(unittest.TestCase):
         self.assertEqual(sorted(names), sorted(should_return))
 
 
-class TestGetMethodNames(unittest.TestCase):
+class TestGetClassNames(unittest.TestCase):
+
+    def test_blah_blah_blah(self):
+        """All classes should be returned, etc. etc."""
+        module = 'test_data.example_module'
+        should_return = ['SomeClass']
+        classes = h.get_class_names(module)
+        self.assertEqual(sorted(classes), sorted(should_return))
+
+
+class TestGetClassesAndMethods(unittest.TestCase):
 
     def test_one_method(self):
         """A class with one method should return the proper dictionary, duh."""
         module = 'test_data.example_module'
         should_return = { 'SomeClass': ['some_method'] }
-        methods = h.get_method_names(module)
+        methods = h.get_classes_and_methods(module)
+        self.assertEqual(sorted(methods), sorted(should_return))
+
+
+class TestGetMethodsFromClass(unittest.TestCase):
+
+    def test_one_method(self):
+        """A class with one method should return the proper list."""
+        import test_data.example_module as test
+        should_return = ['some_method']
+        methods = h.get_methods_from_class(test.SomeClass)
         self.assertEqual(sorted(methods), sorted(should_return))
 
 

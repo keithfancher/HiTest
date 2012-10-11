@@ -3,6 +3,7 @@
 
 import unittest
 import hitest as h
+import test_data.example_module as test_module
 
 
 class TestFixModuleName(unittest.TestCase):
@@ -23,18 +24,16 @@ class TestGetFunctionNames(unittest.TestCase):
 
     def test_with_main(self):
         """Should return all the functions, including main."""
-        module = 'test_data.example_module'
         should_return = ['some_function', 'another_function',
                          'one_more_function', 'main']
-        names = h.get_function_names(module, True)
+        names = h.get_function_names(test_module, True)
         self.assertEqual(sorted(names), sorted(should_return))
 
     def test_ignore_main(self):
         """Should return all functions *except* for main."""
-        module = 'test_data.example_module'
         should_return = ['some_function', 'another_function',
                          'one_more_function']
-        names = h.get_function_names(module)
+        names = h.get_function_names(test_module)
         self.assertEqual(sorted(names), sorted(should_return))
 
 
@@ -42,10 +41,24 @@ class TestGetClassNames(unittest.TestCase):
 
     def test_blah_blah_blah(self):
         """All classes should be returned, etc. etc."""
-        module = 'test_data.example_module'
         should_return = ['SomeClass', 'MoreDifferentClass']
-        classes = h.get_class_names(module)
+        classes = h.get_class_names(test_module)
         self.assertEqual(sorted(classes), sorted(should_return))
+
+
+class TestGetMethodsFromClass(unittest.TestCase):
+
+    def test_one_method(self):
+        """A class with one method should return the proper list."""
+        should_return = ['some_method']
+        methods = h.get_methods_from_class(test_module.SomeClass)
+        self.assertEqual(sorted(methods), sorted(should_return))
+
+    def test_more_methods(self):
+        """A class with a couple of methods should return the proper list."""
+        should_return = ['method_one', 'method_two']
+        methods = h.get_methods_from_class(test_module.MoreDifferentClass)
+        self.assertEqual(sorted(methods), sorted(should_return))
 
 
 class TestGetClassesAndMethods(unittest.TestCase):
@@ -53,28 +66,10 @@ class TestGetClassesAndMethods(unittest.TestCase):
     def test_em_okay_jeez_guys(self):
         """A module with a couple of classes/methods should return the proper
         dictionary, duh."""
-        module = 'test_data.example_module'
         should_return = { 'MoreDifferentClass': ['method_one', 'method_two'],
                           'SomeClass': ['some_method'] }
-        classes_and_methods = h.get_classes_and_methods(module)
+        classes_and_methods = h.get_classes_and_methods(test_module)
         self.assertEqual(classes_and_methods, should_return)
-
-
-class TestGetMethodsFromClass(unittest.TestCase):
-
-    def test_one_method(self):
-        """A class with one method should return the proper list."""
-        import test_data.example_module as test
-        should_return = ['some_method']
-        methods = h.get_methods_from_class(test.SomeClass)
-        self.assertEqual(sorted(methods), sorted(should_return))
-
-    def test_more_methods(self):
-        """A class with a couple of methods should return the proper list."""
-        import test_data.example_module as test
-        should_return = ['method_one', 'method_two']
-        methods = h.get_methods_from_class(test.MoreDifferentClass)
-        self.assertEqual(sorted(methods), sorted(should_return))
 
 
 class TestToClassCase(unittest.TestCase):
@@ -100,11 +95,10 @@ class TestToClassCase(unittest.TestCase):
 class TestGenTestBoilerplate(unittest.TestCase):
 
     def test_example_module(self):
-        module = 'test_data.example_module'
         good_boilerplate = ''
         with open('test_data/test_example_module.py') as f:
             good_boilerplate = f.read()
-        self.assertEqual(h.gen_test_boilerplate(module), good_boilerplate)
+        self.assertEqual(h.gen_test_boilerplate(test_module), good_boilerplate)
 
 
 if __name__ == '__main__':

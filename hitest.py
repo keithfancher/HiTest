@@ -22,29 +22,42 @@ import inspect
 import sys
 
 
-def fix_module_name(module):
-    """Strip .py from a module name, if it exists."""
-    if module.endswith('.py'):
-        return module[:-3]
+def fix_module_name(module_name):
+    """Strip .py from a module name, if it exists. TODO: deal with full paths,
+    etc."""
+    if module_name.endswith('.py'):
+        return module_name[:-3]
     else:
-        return module
+        return module_name
 
 
 def get_function_names(module, include_main=False):
     """Return a list of functions in the given module. By default does not
     include main, 'cause who wants to test that?"""
     function_names = []
-    imported = None
-    try:
-        exec('import ' + module + ' as imported') # crazy!
-    except ImportError:
-        print "Sorry, can't find a module called " + module
-        sys.exit(1)
-    funcs = inspect.getmembers(imported, inspect.isfunction)
+    funcs = inspect.getmembers(module, inspect.isfunction)
     for name, dummy in funcs:
         if include_main or name != 'main':
             function_names.append(name)
     return function_names
+
+
+def get_class_names(module):
+    """Returns a list of class names that live in the given module."""
+    class_names = []
+    classes = inspect.getmembers(module, inspect.isclass)
+    for name, dummy in classes:
+        class_names.append(name)
+    return class_names
+
+
+def get_methods_from_class(class_object):
+    """Returns a list of methods that live in a given class."""
+    method_names = []
+    methods = inspect.getmembers(class_object, inspect.ismethod)
+    for name, dummy in methods:
+        method_names.append(name)
+    return method_names
 
 
 def get_classes_and_methods(module):
@@ -53,41 +66,11 @@ def get_classes_and_methods(module):
     class."""
     class_names = get_class_names(module)
     methods = {}
-    imported = None
-    try:
-        exec('import ' + module + ' as imported') # crazy!
-    except ImportError:
-        print "Sorry, can't find a module called " + module
-        sys.exit(1)
     for class_name in class_names:
-        class_object = getattr(imported, class_name)
+        class_object = getattr(module, class_name)
         class_methods = get_methods_from_class(class_object)
         methods[class_name] = class_methods
     return methods
-
-
-def get_class_names(module):
-    """Returns a list of class names that live in the given module."""
-    class_names = []
-    imported = None
-    try:
-        exec('import ' + module + ' as imported') # crazy!
-    except ImportError:
-        print "Sorry, can't find a module called " + module
-        sys.exit(1)
-    classes = inspect.getmembers(imported, inspect.isclass)
-    for name, dummy in classes:
-        class_names.append(name)
-    return class_names
-
-
-def get_methods_from_class(class_name):
-    """Returns a list of methods that live in a given class."""
-    method_names = []
-    methods = inspect.getmembers(class_name, inspect.ismethod)
-    for name, dummy in methods:
-        method_names.append(name)
-    return method_names
 
 
 def to_class_case(name):
@@ -103,10 +86,10 @@ def to_class_case(name):
     return ret
 
 
-def gen_test_boilerplate(module_name, include_main=False):
-    """This does most of the work. Given a module name, returns a string of the
-    test boilerplate for that module."""
-    module_name = fix_module_name(module_name) # strip .py
+def gen_test_boilerplate(module, include_main=False):
+    """Given a module, returns a string of the test boilerplate for that
+    module."""
+    module_name = module.__name__
     header = "#!/usr/bin/env python\n\n\n"
     header += "import unittest\n"
     header += "import " + module_name + "\n\n"
@@ -115,7 +98,7 @@ def gen_test_boilerplate(module_name, include_main=False):
     footer += "    unittest.main()\n"
     function_tests = ""
 
-    function_names = get_function_names(module_name, include_main)
+    function_names = get_function_names(module, include_main)
 
     for name in function_names:
         classy_name = to_class_case(name)
@@ -124,7 +107,7 @@ def gen_test_boilerplate(module_name, include_main=False):
         function_tests += "    def test_something(self):\n        pass\n\n"
 
     class_tests = ""
-    classes_and_methods = get_classes_and_methods(module_name)
+    classes_and_methods = get_classes_and_methods(module)
     for class_name, method_list in classes_and_methods.items():
         class_tests += "\nclass Test" + class_name + "(unittest.TestCase):\n\n"
         class_tests += "    def setUp(self):\n"
@@ -150,7 +133,14 @@ def get_args():
 def main():
     """My main() man."""
     args = get_args()
-    print gen_test_boilerplate(args.target_module, args.test_main),
+    module_name = fix_module_name(args.target_module)
+
+    try:
+        exec('import ' + module_name + ' as imported') # crazy!
+    except ImportError:
+        print "Sorry, can't seem to import the module " + module_name
+        sys.exit(1)
+    print gen_test_boilerplate(imported, args.test_main),
 
 
 if __name__ == '__main__':

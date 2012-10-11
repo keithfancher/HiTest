@@ -16,6 +16,15 @@ class SomeClass(object):
         pass
 
 
+class MoreDifferentClass(object):
+
+    def method_one(self):
+        pass
+
+    def method_two(self):
+        pass
+
+
 def main():
     pass
 

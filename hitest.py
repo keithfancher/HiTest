@@ -89,6 +89,28 @@ def to_class_case(name):
     return ret
 
 
+def function_boilerplate(name):
+    """Returns test boilerplate for a single function."""
+    classy_name = to_class_case(name)
+    test = "\nclass Test" + classy_name + "(unittest.TestCase):\n\n"
+    test += "    def setUp(self):\n        pass\n\n"
+    test += "    def test_something(self):\n        pass\n\n"
+    return test
+
+
+def class_boilerplate(module_name, class_name, method_list):
+    """Returns test boilerplate for a single class."""
+    test = "\nclass Test" + class_name + "(unittest.TestCase):\n\n"
+    test += "    def setUp(self):\n"
+    test += "        self.test_instance = " + module_name + "." + class_name
+    test += "()\n\n"
+
+    for method_name in method_list:
+        test += "    def test_" + method_name + "(self):\n"
+        test += "        pass\n\n"
+    return test
+
+
 def gen_test_boilerplate(module, include_main=False):
     """Given a module, returns a string of the test boilerplate for that
     module."""
@@ -99,26 +121,16 @@ def gen_test_boilerplate(module, include_main=False):
 
     footer = "\nif __name__ == '__main__':\n"
     footer += "    unittest.main()\n"
+
     function_tests = ""
-
     function_names = get_function_names(module, include_main)
-
     for name in function_names:
-        classy_name = to_class_case(name)
-        function_tests += "\nclass Test" + classy_name + "(unittest.TestCase):\n\n"
-        function_tests += "    def setUp(self):\n        pass\n\n"
-        function_tests += "    def test_something(self):\n        pass\n\n"
+        function_tests += function_boilerplate(name)
 
     class_tests = ""
     classes_and_methods = get_classes_and_methods(module)
     for class_name, method_list in classes_and_methods.items():
-        class_tests += "\nclass Test" + class_name + "(unittest.TestCase):\n\n"
-        class_tests += "    def setUp(self):\n"
-        class_tests += "        self.test_instance = " + module_name + "." + class_name + "()\n\n"
-
-        for method_name in method_list:
-            class_tests += "    def test_" + method_name + "(self):\n"
-            class_tests += "        pass\n\n"
+        class_tests += class_boilerplate(module_name, class_name, method_list)
 
     return header + function_tests + class_tests + footer
 

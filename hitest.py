@@ -31,33 +31,36 @@ def fix_module_name(module_name):
         return module_name
 
 
+def get_member_names(obj, member_type_predicate):
+    """Get a list of member names of the specified type from the given object.
+    member_type_predicate is one of the inspect module's is* methods."""
+    names = []
+    members = inspect.getmembers(obj, member_type_predicate)
+    for name, dummy in members:
+        names.append(name)
+    return names
+
+
 def get_function_names(module, include_main=False):
     """Return a list of functions in the given module. By default does not
     include main, 'cause who wants to test that?"""
-    function_names = []
-    funcs = inspect.getmembers(module, inspect.isfunction)
-    for name, dummy in funcs:
-        if include_main or name != 'main':
-            function_names.append(name)
+    function_names = get_member_names(module, inspect.isfunction)
+    if not include_main:
+        try:
+            function_names.remove('main')
+        except ValueError:
+            pass # if main's not in there we're good to go!
     return function_names
 
 
 def get_class_names(module):
     """Returns a list of class names that live in the given module."""
-    class_names = []
-    classes = inspect.getmembers(module, inspect.isclass)
-    for name, dummy in classes:
-        class_names.append(name)
-    return class_names
+    return get_member_names(module, inspect.isclass)
 
 
 def get_methods_from_class(class_object):
     """Returns a list of methods that live in a given class."""
-    method_names = []
-    methods = inspect.getmembers(class_object, inspect.ismethod)
-    for name, dummy in methods:
-        method_names.append(name)
-    return method_names
+    return get_member_names(class_object, inspect.ismethod)
 
 
 def get_classes_and_methods(module):

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 
+import inspect
 import unittest
+
 import hitest as h
 import test_data.example_module as test_module
 
@@ -18,6 +20,33 @@ class TestFixModuleName(unittest.TestCase):
         """Module with no .py at the end should be left alone."""
         module = 'some_module'
         self.assertEqual(h.fix_module_name(module), module)
+
+
+class TestGetMemberNames(unittest.TestCase):
+
+    def test_functions(self):
+        """Function names should be returned properly."""
+        should_return = ['some_function', 'another_function',
+                         'one_more_function', 'main']
+        names = h.get_member_names(test_module, inspect.isfunction)
+        self.assertEqual(sorted(names), sorted(should_return))
+
+    def test_classes(self):
+        """Class names should be returned properly."""
+        should_return = ['SomeClass', 'MoreDifferentClass']
+        names = h.get_member_names(test_module, inspect.isclass)
+        self.assertEqual(sorted(names), sorted(should_return))
+
+    def test_methods_that_exist(self):
+        """Method names should be returned properly."""
+        should_return = ['method_one', 'method_two']
+        names = h.get_member_names(test_module.MoreDifferentClass, inspect.ismethod)
+        self.assertEqual(sorted(names), sorted(should_return))
+
+    def test_methods_that_dont_exist(self):
+        """If there *are* no method names, empty list should be returned."""
+        names = h.get_member_names(test_module, inspect.ismethod)
+        self.assertEqual(names, [])
 
 
 class TestGetFunctionNames(unittest.TestCase):

@@ -1,8 +1,7 @@
 HITEST
 ======
 
-Generates useful unit test boilerplate for Python modules. Or it will once it's
-finished, anyway...
+Generates unit test boilerplate for Python modules.
 
 
 REQUIREMENTS
@@ -14,9 +13,30 @@ REQUIREMENTS
 USAGE
 -----
 Just call it with your module as a command line argument. Output goes to
-stdout. For example, to generate testing boilerplate for wacky_module.py:
+stdout. For example, to generate test boilerplate for wacky_module.py:
 
     $ ./hitest.py wacky_module.py > test_wacky_module.py
 
 Then fill in your tests and pat yourself on the back for being a Good
 Programmer!
+
+
+A NOTE ON PATHS
+---------------
+The generated tests will always import your module directly, ignoring any
+containing package or path. For instance, if you were to call it thusly:
+
+    $ ./hitest.py big_package/impressive_module.py
+
+The generated test will import your module like this:
+
+    import impressive_module
+
+NOT like this:
+    
+    import big_package.impressive_module
+
+Everyone has different preferences and conventions about where they keep their
+unit tests. Rather than try to guess what your preference is, I simply assume
+that your tests will live in the same directory as your tested modules. If
+that's not the case, just modify the import statement and you're good to go!

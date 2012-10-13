@@ -18,17 +18,20 @@
 
 
 import argparse
+import imp
 import inspect
+import os
 import sys
 
 
 def fix_module_name(module_name):
-    """Strip .py from a module name, if it exists. TODO: deal with full paths,
-    etc."""
-    if module_name.endswith('.py'):
-        return module_name[:-3]
+    """Strip path and extension from a module's filename to make it
+    importable."""
+    base_name = os.path.basename(module_name)
+    if base_name.endswith('.py'):
+        return base_name[:-3]
     else:
-        return module_name
+        return base_name
 
 
 def get_member_names(obj, member_type_predicate):
@@ -151,10 +154,14 @@ def main():
     module_name = fix_module_name(args.target_module)
 
     try:
-        exec('import ' + module_name + ' as imported') # crazy!
-    except ImportError:
-        print "Sorry, can't seem to import the module " + module_name
+        imported = imp.load_source(module_name, args.target_module)
+    except IOError:
+        print "Sorry, that module doesn't seem to exist."
         sys.exit(1)
+    except SyntaxError:
+        print "That doesn't seem to be a valid Python module!"
+        sys.exit(1)
+
     print gen_test_boilerplate(imported, args.test_main),
 
 

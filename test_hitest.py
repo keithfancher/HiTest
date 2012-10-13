@@ -21,6 +21,12 @@ class TestFixModuleName(unittest.TestCase):
         module = 'some_module'
         self.assertEqual(h.fix_module_name(module), module)
 
+    def test_full_path_stripped(self):
+        """Path should be stripped from file as well as extension."""
+        module = '/some/really/ridiculous/path/to/annoying_script.py'
+        output = 'annoying_script'
+        self.assertEqual(h.fix_module_name(module), output)
+
 
 class TestGetMemberNames(unittest.TestCase):
 

@@ -10,6 +10,22 @@ REQUIREMENTS
 * argparse (standard with Python 2.7+)
 
 
+INSTALLATION
+------------
+There are several different ways you can install HiTest. You can clone the git
+repo like this:
+
+    $ git clone git://github.com/keithfancher/HiTest.git
+
+You can also install with pip:
+
+    $ pip install https://github.com/keithfancher/HiTest/tarball/master
+
+Or skip all that nonsense and just download the one file you need:
+
+    https://raw.github.com/keithfancher/HiTest/master/hitest.py
+
+
 USAGE
 -----
 Just call it with your module as a command line argument. Output goes to
@@ -33,10 +49,10 @@ The generated test will import your module like this:
     import impressive_module
 
 NOT like this:
-    
+
     import big_package.impressive_module
 
 Everyone has different preferences and conventions about where they keep their
 unit tests. Rather than try to guess what your preference is, I simply assume
-that your tests will live in the same directory as your tested modules. If
-that's not the case, just modify the import statement and you're good to go!
+that your tests will live in the same package/directory as your tested modules.
+If that's not the case, just modify the import statement and you're good to go!
